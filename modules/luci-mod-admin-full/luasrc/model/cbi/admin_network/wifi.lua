@@ -666,6 +666,7 @@ encr:depends({mode="ahdemo"})
 encr:depends({mode="ap-wds"})
 encr:depends({mode="sta-wds"})
 encr:depends({mode="mesh"})
+encr:depends({mode="wds"})
 
 cipher = s:taboption("encryption", ListValue, "cipher", translate("Cipher"))
 cipher:depends({encryption="wpa"})
