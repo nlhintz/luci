@@ -706,7 +706,7 @@ end
 function encr.write(self, section, value)
 	local e = tostring(encr:formvalue(section))
 	local c = tostring(cipher:formvalue(section))
-	if value == "wpa" or value == "wpa2"  then
+	if value == "wpa" or value == "wpa2" or value == "wpa-mixed" then
 		self.map.uci:delete("wireless", section, "key")
 	end
 	if e and (c == "tkip" or c == "ccmp" or c == "tkip+ccmp") then
@@ -747,6 +747,7 @@ if hwtype == "atheros" or hwtype == "mac80211" or hwtype == "prism2" then
 		if has_ap_eap and has_sta_eap then
 			encr:value("wpa", "WPA-EAP", {mode="ap"}, {mode="sta"}, {mode="ap-wds"}, {mode="sta-wds"})
 			encr:value("wpa2", "WPA2-EAP", {mode="ap"}, {mode="sta"}, {mode="ap-wds"}, {mode="sta-wds"})
+			encr:value("wpa-mixed", "WPA-EAP/WPA2-EAP Mixed Mode", {mode="ap"}, {mode="sta"}, {mode="ap-wds"}, {mode="sta-wds"}})
 		end
 	elseif hostapd and not supplicant then
 		encr:value("psk", "WPA-PSK", {mode="ap"}, {mode="ap-wds"})
@@ -755,6 +756,7 @@ if hwtype == "atheros" or hwtype == "mac80211" or hwtype == "prism2" then
 		if has_ap_eap then
 			encr:value("wpa", "WPA-EAP", {mode="ap"}, {mode="ap-wds"})
 			encr:value("wpa2", "WPA2-EAP", {mode="ap"}, {mode="ap-wds"})
+			encr:value("wpa-mixed", "WPA-EAP/WPA2-EAP Mixed Mode", {mode="ap"}, {mode="ap-wds"})
 		end
 		encr.description = translate(
 			"WPA-Encryption requires wpa_supplicant (for client mode) or hostapd (for AP " ..
@@ -787,48 +789,60 @@ end
 auth_server = s:taboption("encryption", Value, "auth_server", translate("Radius-Authentication-Server"))
 auth_server:depends({mode="ap", encryption="wpa"})
 auth_server:depends({mode="ap", encryption="wpa2"})
+auth_server:depends({mode="ap", encryption="wpa-mixed"})
 auth_server:depends({mode="ap-wds", encryption="wpa"})
 auth_server:depends({mode="ap-wds", encryption="wpa2"})
+auth_server:depends({mode="ap-wds", encryption="wpa-mixed"})
 auth_server.rmempty = true
 auth_server.datatype = "host(0)"
 
 auth_port = s:taboption("encryption", Value, "auth_port", translate("Radius-Authentication-Port"), translatef("Default %d", 1812))
 auth_port:depends({mode="ap", encryption="wpa"})
 auth_port:depends({mode="ap", encryption="wpa2"})
+auth_port:depends({mode="ap", encryption="wpa-mixed"})
 auth_port:depends({mode="ap-wds", encryption="wpa"})
 auth_port:depends({mode="ap-wds", encryption="wpa2"})
+auth_port:depends({mode="ap-wds", encryption="wpa-mixed"})
 auth_port.rmempty = true
 auth_port.datatype = "port"
 
 auth_secret = s:taboption("encryption", Value, "auth_secret", translate("Radius-Authentication-Secret"))
 auth_secret:depends({mode="ap", encryption="wpa"})
 auth_secret:depends({mode="ap", encryption="wpa2"})
+auth_secret:depends({mode="ap", encryption="wpa-mixed"})
 auth_secret:depends({mode="ap-wds", encryption="wpa"})
 auth_secret:depends({mode="ap-wds", encryption="wpa2"})
+auth_secret:depends({mode="ap-wds", encryption="wpa-mixed"})
 auth_secret.rmempty = true
 auth_secret.password = true
 
 acct_server = s:taboption("encryption", Value, "acct_server", translate("Radius-Accounting-Server"))
 acct_server:depends({mode="ap", encryption="wpa"})
 acct_server:depends({mode="ap", encryption="wpa2"})
+acct_server:depends({mode="ap", encryption="wpa-mixed"})
 acct_server:depends({mode="ap-wds", encryption="wpa"})
 acct_server:depends({mode="ap-wds", encryption="wpa2"})
+acct_server:depends({mode="ap-wds", encryption="wpa-mixed"})
 acct_server.rmempty = true
 acct_server.datatype = "host(0)"
 
 acct_port = s:taboption("encryption", Value, "acct_port", translate("Radius-Accounting-Port"), translatef("Default %d", 1813))
 acct_port:depends({mode="ap", encryption="wpa"})
 acct_port:depends({mode="ap", encryption="wpa2"})
+acct_port:depends({mode="ap", encryption="wpa-mixed"})
 acct_port:depends({mode="ap-wds", encryption="wpa"})
 acct_port:depends({mode="ap-wds", encryption="wpa2"})
+acct_port:depends({mode="ap-wds", encryption="wpa-mixed"})
 acct_port.rmempty = true
 acct_port.datatype = "port"
 
 acct_secret = s:taboption("encryption", Value, "acct_secret", translate("Radius-Accounting-Secret"))
 acct_secret:depends({mode="ap", encryption="wpa"})
 acct_secret:depends({mode="ap", encryption="wpa2"})
+acct_secret:depends({mode="ap", encryption="wpa-mixed"})
 acct_secret:depends({mode="ap-wds", encryption="wpa"})
 acct_secret:depends({mode="ap-wds", encryption="wpa2"})
+acct_secret:depends({mode="ap-wds", encryption="wpa-mixed"})
 acct_secret.rmempty = true
 acct_secret.password = true
 
