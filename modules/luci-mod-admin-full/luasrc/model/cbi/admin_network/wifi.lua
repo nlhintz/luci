@@ -680,8 +680,21 @@ cipher:value("ccmp", translate("Force CCMP (AES)"))
 cipher:value("tkip", translate("Force TKIP"))
 cipher:value("tkip+ccmp", translate("Force TKIP and CCMP (AES)"))
 
-function encr.cfgvalue(self, section)
+function encr.standard_form(self, section)
 	local v = tostring(ListValue.cfgvalue(self, section))
+	if v then
+		v = v:gsub("psk%+psk2", "psk-mixed")
+		v = v:gsub("mixed%-psk", "psk-mixed")
+		v = v:gsub("wpa%+wpa2", "wpa-mixed")
+		v = v:gsub("mixed%-wpa", "wpa-mixed")
+		v = v:gsub("aes", "ccmp")
+		v = v:gsub("ccmp%+tkip", "tkip+ccmp")
+	end
+	return v
+end
+
+function encr.cfgvalue(self, section)
+	local v = encr.standard_form(encr, section)
 	if v == "wep" then
 		return "wep-open"
 	elseif v and v:match("%+") then
@@ -703,14 +716,9 @@ function encr.write(self, section, value)
 end
 
 function cipher.cfgvalue(self, section)
-	local v = tostring(ListValue.cfgvalue(encr, section))
+	local v = encr.standard_form(encr, section)
 	if v and v:match("%+") then
 		v = v:gsub("^[^%+]+%+", "")
-		if v == "aes" then v = "ccmp"
-		elseif v == "tkip+aes" then v = "tkip+ccmp"
-		elseif v == "aes+tkip" then v = "tkip+ccmp"
-		elseif v == "ccmp+tkip" then v = "tkip+ccmp"
-		end
 	end
 	return v
 end
@@ -773,7 +781,7 @@ if hwtype == "atheros" or hwtype == "mac80211" or hwtype == "prism2" then
 elseif hwtype == "broadcom" then
 	encr:value("psk", "WPA-PSK")
 	encr:value("psk2", "WPA2-PSK")
-	encr:value("psk+psk2", "WPA-PSK/WPA2-PSK Mixed Mode")
+	encr:value("psk-mixed", "WPA-PSK/WPA2-PSK Mixed Mode")
 end
 
 auth_server = s:taboption("encryption", Value, "auth_server", translate("Radius-Authentication-Server"))
@@ -827,7 +835,6 @@ acct_secret.password = true
 wpakey = s:taboption("encryption", Value, "_wpa_key", translate("Key"))
 wpakey:depends("encryption", "psk")
 wpakey:depends("encryption", "psk2")
-wpakey:depends("encryption", "psk+psk2")
 wpakey:depends("encryption", "psk-mixed")
 wpakey.datatype = "wpakey"
 wpakey.rmempty = true
