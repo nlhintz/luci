@@ -784,6 +784,9 @@ elseif hwtype == "broadcom" then
 	encr:value("psk", "WPA-PSK")
 	encr:value("psk2", "WPA2-PSK")
 	encr:value("psk-mixed", "WPA-PSK/WPA2-PSK Mixed Mode")
+	encr:value("wpa", "WPA-EAP")
+	encr:value("wpa2", "WPA2-EAP")
+	encr:value("wpa-mixed", "WPA-EAP/WPA2-EAP Mixed Mode")
 end
 
 auth_server = s:taboption("encryption", Value, "auth_server", translate("Radius-Authentication-Server"))
@@ -816,35 +819,37 @@ auth_secret:depends({mode="ap-wds", encryption="wpa-mixed"})
 auth_secret.rmempty = true
 auth_secret.password = true
 
-acct_server = s:taboption("encryption", Value, "acct_server", translate("Radius-Accounting-Server"))
-acct_server:depends({mode="ap", encryption="wpa"})
-acct_server:depends({mode="ap", encryption="wpa2"})
-acct_server:depends({mode="ap", encryption="wpa-mixed"})
-acct_server:depends({mode="ap-wds", encryption="wpa"})
-acct_server:depends({mode="ap-wds", encryption="wpa2"})
-acct_server:depends({mode="ap-wds", encryption="wpa-mixed"})
-acct_server.rmempty = true
-acct_server.datatype = "host(0)"
+if hwtype ~= "broadcom" then
+	acct_server = s:taboption("encryption", Value, "acct_server", translate("Radius-Accounting-Server"))
+	acct_server:depends({mode="ap", encryption="wpa"})
+	acct_server:depends({mode="ap", encryption="wpa2"})
+	acct_server:depends({mode="ap", encryption="wpa-mixed"})
+	acct_server:depends({mode="ap-wds", encryption="wpa"})
+	acct_server:depends({mode="ap-wds", encryption="wpa2"})
+	acct_server:depends({mode="ap-wds", encryption="wpa-mixed"})
+	acct_server.rmempty = true
+	acct_server.datatype = "host(0)"
 
-acct_port = s:taboption("encryption", Value, "acct_port", translate("Radius-Accounting-Port"), translatef("Default %d", 1813))
-acct_port:depends({mode="ap", encryption="wpa"})
-acct_port:depends({mode="ap", encryption="wpa2"})
-acct_port:depends({mode="ap", encryption="wpa-mixed"})
-acct_port:depends({mode="ap-wds", encryption="wpa"})
-acct_port:depends({mode="ap-wds", encryption="wpa2"})
-acct_port:depends({mode="ap-wds", encryption="wpa-mixed"})
-acct_port.rmempty = true
-acct_port.datatype = "port"
+	acct_port = s:taboption("encryption", Value, "acct_port", translate("Radius-Accounting-Port"), translatef("Default %d", 1813))
+	acct_port:depends({mode="ap", encryption="wpa"})
+	acct_port:depends({mode="ap", encryption="wpa2"})
+	acct_port:depends({mode="ap", encryption="wpa-mixed"})
+	acct_port:depends({mode="ap-wds", encryption="wpa"})
+	acct_port:depends({mode="ap-wds", encryption="wpa2"})
+	acct_port:depends({mode="ap-wds", encryption="wpa-mixed"})
+	acct_port.rmempty = true
+	acct_port.datatype = "port"
 
-acct_secret = s:taboption("encryption", Value, "acct_secret", translate("Radius-Accounting-Secret"))
-acct_secret:depends({mode="ap", encryption="wpa"})
-acct_secret:depends({mode="ap", encryption="wpa2"})
-acct_secret:depends({mode="ap", encryption="wpa-mixed"})
-acct_secret:depends({mode="ap-wds", encryption="wpa"})
-acct_secret:depends({mode="ap-wds", encryption="wpa2"})
-acct_secret:depends({mode="ap-wds", encryption="wpa-mixed"})
-acct_secret.rmempty = true
-acct_secret.password = true
+	acct_secret = s:taboption("encryption", Value, "acct_secret", translate("Radius-Accounting-Secret"))
+	acct_secret:depends({mode="ap", encryption="wpa"})
+	acct_secret:depends({mode="ap", encryption="wpa2"})
+	acct_secret:depends({mode="ap", encryption="wpa-mixed"})
+	acct_secret:depends({mode="ap-wds", encryption="wpa"})
+	acct_secret:depends({mode="ap-wds", encryption="wpa2"})
+	acct_secret:depends({mode="ap-wds", encryption="wpa-mixed"})
+	acct_secret.rmempty = true
+	acct_secret.password = true
+end
 
 wpakey = s:taboption("encryption", Value, "_wpa_key", translate("Key"))
 wpakey:depends("encryption", "psk")
