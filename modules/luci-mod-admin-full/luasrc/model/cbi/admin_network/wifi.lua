@@ -359,6 +359,8 @@ if hwtype == "broadcom" then
 
 	s:taboption("advanced", Flag, "frameburst", translate("Frame Bursting"))
 
+	s:taboption("advanced", Value, "frag", translate("Fragmentation Threshold"))
+	s:taboption("advanced", Value, "rts", translate("RTS/CTS Threshold"))
 	s:taboption("advanced", Value, "distance", translate("Distance Optimization"))
 	--s:option(Value, "slottime", translate("Slot time"))
 
