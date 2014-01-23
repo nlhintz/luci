@@ -613,7 +613,6 @@ if hwtype == "broadcom" then
 	hidden = s:taboption("general", Flag, "hidden", translate("Hide <abbr title=\"Extended Service Set Identifier\">ESSID</abbr>"))
 	hidden:depends({mode="ap"})
 	hidden:depends({mode="adhoc"})
-	hidden:depends({mode="wds"})
 
 	isolate = s:taboption("advanced", Flag, "isolate", translate("Separate Clients"),
 	 translate("Prevents client-to-client communication"))
