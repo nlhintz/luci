@@ -362,7 +362,7 @@ if hwtype == "broadcom" then
 	s:taboption("advanced", Value, "frag", translate("Fragmentation Threshold"))
 	s:taboption("advanced", Value, "rts", translate("RTS/CTS Threshold"))
 	s:taboption("advanced", Value, "distance", translate("Distance Optimization"))
-	--s:option(Value, "slottime", translate("Slot time"))
+	--s:taboption("advanced", Value, "slottime", translate("Slot Time"))
 
 	s:taboption("advanced", Value, "country", translate("Country Code"))
 	s:taboption("advanced", Value, "maxassoc", translate("Connection Limit"))
